@@ -14,33 +14,33 @@ type Config struct {
 
 type AppConfig struct {
 	Server ServerConfig `mapstructure:"server"`
-	Mongo  MongoConfig  `mapstructure:"database"`
+	Mongo  MongoConfig  `mapstructure:"mongo"`
 	Redis  RedisConfig  `mapstructure:"redis"`
 	Log    LogConfig    `mapstructure:"log"`
 }
 
 type ServerConfig struct {
-	Port         int           `mapstructure:"port"`
-	Timeout      time.Duration `mapstructure:"timeout"`
-	ReadTimeout  time.Duration `mapstructure:"read_timeout"`
-	WriteTimeout time.Duration `mapstructure:"read_timeout"`
+	Port         int           `mapstructure:"port" env:"SERVER_PORT"`
+	Timeout      time.Duration `mapstructure:"timeout" env:"SERVER_TIMEOUT"`
+	ReadTimeout  time.Duration `mapstructure:"read_timeout" env:"SERVER_READ_TIMEOUT"`
+	WriteTimeout time.Duration `mapstructure:"read_timeout" env:"SERVER_WRITE_TIMEOUT"`
 }
 
 type MongoConfig struct {
-	Uri string `mapstructure:"uri"`
+	Uri string `mapstructure:"uri" env:"MONGO_URI"`
 }
 
 type RedisConfig struct {
-	Address  string `mapstructure:"address"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
-	Db       int    `mapstructure:"db"`
+	Address  string `mapstructure:"address" env:"REDIS_ADDRESS"`
+	Username string `mapstructure:"username" env:"REDIS_USERNAME"`
+	Password string `mapstructure:"password" env:"REDIS_PASSWORD"`
+	Db       int    `mapstructure:"db" env:"REDIS_DB"`
 }
 
 type LogConfig struct {
-	Level   string `mapstructure:"level"`
-	File    string `mapstructure:"file"`
-	Console bool   `mapstructure:"console"`
+	Level   string `mapstructure:"level" env:"LOG_LEVEL"`
+	File    string `mapstructure:"file" env:"LOG_FILE"`
+	Console bool   `mapstructure:"console" env:"LOG_CONSOLE"`
 }
 
 func LoadConfig(path string) (*AppConfig, error) {
@@ -63,6 +63,8 @@ func LoadConfig(path string) (*AppConfig, error) {
 	}
 
 	setDefaults(&config.App)
+
+	fmt.Println(config)
 
 	return &config.App, nil
 }
