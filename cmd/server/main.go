@@ -16,6 +16,7 @@ import (
 	"github.com/emaldie/secret-api/internal/server/config"
 	"github.com/emaldie/secret-api/internal/server/db"
 	"github.com/emaldie/secret-api/internal/server/injection"
+	api "github.com/emaldie/secret-api/internal/server/router"
 	"github.com/go-playground/validator"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -89,10 +90,11 @@ func initApp(cfg *config.AppConfig) (*App, error) {
 
 	router := http.NewServeMux()
 
-	// slog.Info("Setting up API...")
-	// api.Setup(router, api.RouterConfig{
-	// })
-	// slog.Info("Successfully set up API")
+	slog.Info("Setting up API...")
+	api.Setup(router, api.RouterConfig{
+		SecretHandler: &deps.Handlers.SecretHandler,
+	})
+	slog.Info("Successfully set up API")
 
 	return &App{
 		DB:        database,
