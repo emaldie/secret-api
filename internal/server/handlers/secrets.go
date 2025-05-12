@@ -17,6 +17,10 @@ func NewSecretsHandler(
 	secretService services.SecretService,
 	logger *slog.Logger,
 	validator *validator.Validate,
-) *SecretHandler {
-	return &SecretHandler{secretService: secretService, logger: logger, validator: validator}
+) SecretHandler {
+	return SecretHandler{
+		secretService: secretService,
+		logger:        logger,
+		validator:     validator,
+	}
 }

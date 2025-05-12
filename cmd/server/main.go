@@ -15,6 +15,7 @@ import (
 
 	"github.com/emaldie/secret-api/internal/server/config"
 	"github.com/emaldie/secret-api/internal/server/db"
+	"github.com/emaldie/secret-api/internal/server/injection"
 	"github.com/go-playground/validator"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -53,6 +54,7 @@ type App struct {
 	Redis     *redis.Client
 	Router    *http.ServeMux
 	Validator *validator.Validate
+	Deps      *injection.Dependencies
 	Server    *http.Server
 }
 
@@ -75,15 +77,15 @@ func initApp(cfg *config.AppConfig) (*App, error) {
 
 	validate := validator.New()
 
-	// slog.Info("Initializing DI system...")
-	// deps := injection.NewDependencies(
-	// 	database,
-	// 	redisClient,
-	// 	validate,
-	// 	cfg,
-	// 	slog.Default(),
-	// )
-	// slog.Info("Successfully initialized DI system")
+	slog.Info("Initializing DI system...")
+	deps := injection.NewDependencies(
+		database,
+		redisClient,
+		validate,
+		cfg,
+		slog.Default(),
+	)
+	slog.Info("Successfully initialized DI system")
 
 	router := http.NewServeMux()
 
@@ -93,12 +95,11 @@ func initApp(cfg *config.AppConfig) (*App, error) {
 	// slog.Info("Successfully set up API")
 
 	return &App{
-		DB:     database,
-		Redis:  redisClient,
-		Router: router,
-		//Cache:     cacheInstance,
+		DB:        database,
+		Redis:     redisClient,
+		Router:    router,
 		Validator: validate,
-		//Deps:      deps,
+		Deps:      deps,
 	}, nil
 }
 
