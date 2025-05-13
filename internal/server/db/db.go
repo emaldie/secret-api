@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	"github.com/emaldie/secret-api/internal/server/config"
 	"github.com/redis/go-redis/v9"
@@ -21,11 +20,11 @@ func InitMongo(cfg *config.MongoConfig) (*mongo.Client, error) {
 		return nil, fmt.Errorf("error connecting to db: %w", err)
 	}
 
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			slog.Error("error pinging db", "error", err)
-		}
-	}()
+	// defer func() {
+	// 	if err = client.Disconnect(context.TODO()); err != nil {
+	// 		slog.Error("error pinging db", "error", err)
+	// 	}
+	// }()
 
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		return nil, fmt.Errorf("error pinging db: %w", err)
